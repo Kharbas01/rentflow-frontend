@@ -1,0 +1,7 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/favicon.ico", "destination": "/static/favicon.svg" }
+  ]
+}

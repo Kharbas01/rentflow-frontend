@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="A simple, modern rent management system." />
+  <title>Sign in · RentFlow</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="/static/manifest.json" />
+  <meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#070b18" media="(prefers-color-scheme: dark)" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="RentFlow" />
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png" />
+
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <script src="/static/js/theme.js"></script>
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+  </div>
+
+  
+<main class="auth-wrap" id="main-content" tabindex="-1">
+  <section class="auth-card glass">
+    <div class="auth-brand">
+      <div class="brand-mark lg">RF</div>
+      <h1>RentFlow</h1>
+      <p>Simple rent management for landlords and property owners.</p>
+    </div>
+
+    
+
+    
+
+    <div class="tabs" id="authTabs">
+      <button class="tab active" data-tab="login">Sign in</button>
+      <button class="tab" data-tab="signup">Create account</button>
+    </div>
+
+    <form class="auth-form" id="loginForm" autocomplete="on">
+      <div class="field">
+        <label for="loginEmail">Email address</label>
+        <input type="email" id="loginEmail" name="email" placeholder="you@example.com" required />
+      </div>
+      <div class="field">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" name="password" placeholder="••••••••" required />
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" id="loginSubmit">
+        <span class="btn-label">Sign in</span>
+        <span class="spinner spinner-sm" hidden></span>
+      </button>
+    </form>
+
+    
+    <form class="auth-form" id="signupForm" hidden autocomplete="on">
+      <div class="field">
+        <label for="signupName">Full name</label>
+        <input type="text" id="signupName" name="full_name" placeholder="Your name" required minlength="2" />
+      </div>
+      <div class="field">
+        <label for="signupEmail">Email address</label>
+        <input type="email" id="signupEmail" name="email" placeholder="you@example.com" required />
+      </div>
+      <div class="field">
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" name="password" placeholder="At least 6 characters" required minlength="6" />
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" id="signupSubmit">
+        <span class="btn-label">Create account</span>
+        <span class="spinner spinner-sm" hidden></span>
+      </button>
+    </form>
+    
+
+    <p class="auth-foot">Protected by Supabase Authentication</p>
+    <p class="auth-foot powered-by">Powered by <strong>Yuva</strong></p>
+  </section>
+
+  <section class="auth-showcase">
+    <div class="showcase-card glass float-a">
+      <span class="showcase-label">Monthly rent</span>
+      <strong>₹ 1,24,000</strong>
+      <span class="pill pill-success">+12% collected</span>
+    </div>
+    <div class="showcase-card glass float-b">
+      <span class="showcase-label">Occupancy</span>
+      <strong>92%</strong>
+      <div class="mini-bar"><i style="width:92%"></i></div>
+    </div>
+    <div class="showcase-card glass float-c">
+      <span class="showcase-label">Pending rent</span>
+      <strong>₹ 18,000</strong>
+      <span class="pill pill-warn">2 leaseholders</span>
+    </div>
+  </section>
+</main>
+
+
+  
+
+  <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
+
+  <script src="/static/js/config.js"></script>
+  <script src="/static/js/ui.js"></script>
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/pwa.js"></script>
+  
+  
+<script src="/static/js/login.js"></script>
+
+</body>
+</html>

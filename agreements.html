@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="A simple, modern rent management system." />
+  <title>Agreements · RentFlow</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="/static/manifest.json" />
+  <meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#070b18" media="(prefers-color-scheme: dark)" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="RentFlow" />
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png" />
+
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <script src="/static/js/theme.js"></script>
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+  </div>
+
+  
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-mark">RF</div>
+    <div class="brand-text">
+      <strong>RentFlow</strong>
+      <span>Rent Manager</span>
+    </div>
+    <button class="icon-btn sidebar-close" id="sidebarClose" aria-label="Close menu">&times;</button>
+  </div>
+
+  <nav class="nav">
+    <p class="nav-label">Overview</p>
+    <a href="/" class="nav-link ">
+      <span class="nav-icon">&#9632;</span> Dashboard
+    </a>
+
+    <p class="nav-label">Manage</p>
+    <a href="/properties" class="nav-link ">
+      <span class="nav-icon">&#9962;</span> Properties
+    </a>
+    <a href="/tenants" class="nav-link ">
+      <span class="nav-icon">&#128100;</span> Leaseholders
+    </a>
+    <a href="/payments" class="nav-link ">
+      <span class="nav-icon">&#8377;</span> Rent &amp; Payments
+    </a>
+    <a href="/agreements" class="nav-link active">
+      <span class="nav-icon">&#128196;</span> Agreements
+    </a>
+
+    <p class="nav-label">Insights</p>
+    <a href="/reports" class="nav-link ">
+      <span class="nav-icon">&#128202;</span> Reports
+    </a>
+
+    <p class="nav-label">Account</p>
+    <a href="/settings" class="nav-link ">
+      <span class="nav-icon">&#9881;</span> Settings
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="avatar" id="sidebarAvatar">U</div>
+      <div class="user-meta">
+        <strong id="sidebarName">Loading…</strong>
+        <span id="sidebarEmail"></span>
+      </div>
+    </div>
+    <button class="btn btn-ghost btn-block" id="logoutBtn">Sign out</button>
+    <p class="powered-by">Powered by <strong>Yuva</strong></p>
+  </div>
+</aside>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <main class="main">
+    
+      <header class="topbar">
+  <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu">&#9776;</button>
+
+  <div class="page-heading">
+    <h1>Agreements</h1>
+    <p>Rental agreement documents, stored on Google Drive</p>
+  </div>
+
+  <div class="topbar-actions">
+    <div class="global-search" role="search">
+      <span class="search-icon" aria-hidden="true">&#128269;</span>
+      <label for="globalSearch" class="sr-only">Search leaseholders or properties</label>
+      <input type="search" id="globalSearch" placeholder="Search leaseholders or properties…" autocomplete="off" aria-label="Search leaseholders or properties" />
+      <div class="search-results" id="searchResults" hidden role="listbox" aria-label="Search results"></div>
+    </div>
+
+    <div class="notif-wrap">
+      <button class="icon-btn" id="notifBell" aria-label="Notifications" title="Notifications">
+        &#128276;
+        <span class="notif-badge" id="notifBadge" hidden>0</span>
+      </button>
+      <div class="notif-panel" id="notifPanel" hidden>
+        <div class="notif-panel-head">
+          <h3>Notifications</h3>
+          <button class="btn btn-ghost btn-sm" id="notifMarkAll">Mark all read</button>
+        </div>
+        <div id="notifList"><div class="notif-empty">Loading…</div></div>
+      </div>
+    </div>
+
+    <button class="icon-btn theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle dark / light mode">
+      <span class="theme-icon-light">&#9788;</span>
+      <span class="theme-icon-dark">&#9789;</span>
+    </button>
+  </div>
+</header>
+    
+
+    <div class="content">
+      
+      <div class="alert alert-warn">
+        Google Drive is not configured yet. Set <code>GOOGLE_SERVICE_ACCOUNT_FILE</code> and
+        <code>GOOGLE_DRIVE_FOLDER_ID</code> in <code>.env</code>, then restart the server.
+      </div>
+      
+
+      <section class="glass card">
+        <div class="card-head">
+          <div class="filter-row">
+            <div class="input-icon">
+              <span>&#128269;</span>
+              <input type="search" id="agreementSearch" placeholder="Search by file name…" />
+            </div>
+            <select id="agreementPropertyFilter" class="select">
+              <option value="">All properties</option>
+            </select>
+            <select id="agreementTenantFilter" class="select">
+              <option value="">All leaseholders</option>
+            </select>
+            <select id="agreementStatusFilter" class="select">
+              <option value="all">All statuses</option>
+              <option value="Active">Active</option>
+              <option value="Expiring Soon">Expiring Soon</option>
+              <option value="Expired">Expired</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" id="agreementClearFilters">Clear</button>
+          </div>
+          <div class="head-actions">
+            <button class="btn btn-primary" id="addAgreementBtn">+ New agreement</button>
+          </div>
+        </div>
+
+        <div class="table-wrap" id="agreementTable">
+          <div class="loader-block"><span class="spinner"></span></div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<!-- New / edit agreement -->
+<div class="modal" id="agreementModal" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card glass wide" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h2 id="agreementModalTitle">New agreement</h2>
+      <button class="icon-btn" data-close aria-label="Close">&times;</button>
+    </div>
+    <form id="agreementForm" class="modal-body">
+      <input type="hidden" id="agreementId" />
+
+      <!-- Source tabs: only shown when creating a new agreement -->
+      <div class="field" id="agreementSourceField">
+        <label>Document source *</label>
+        <div class="tabs" id="agreementSourceTabs">
+          <button type="button" class="tab active" data-source="upload">Upload file</button>
+          <button type="button" class="tab" data-source="camera">Scan with camera</button>
+        </div>
+      </div>
+
+      <!-- Upload panel -->
+      <div id="uploadPanel">
+        <div class="dropzone" id="dropZone">
+          <div class="dropzone-icon">&#128196;</div>
+          <p><strong>Drag &amp; drop</strong> a PDF, JPG or PNG here</p>
+          <p class="muted">or</p>
+          <button type="button" class="btn btn-soft btn-sm" id="browseFileBtn">Choose file</button>
+          <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" hidden />
+        </div>
+        <div class="file-chip" id="fileChip" hidden>
+          <span class="file-chip-icon">&#128196;</span>
+          <div class="file-chip-info">
+            <strong id="fileChipName"></strong>
+            <span id="fileChipMeta" class="cell-sub"></span>
+          </div>
+          <button type="button" class="icon-btn" id="fileChipRemove" aria-label="Remove file">&times;</button>
+        </div>
+      </div>
+
+      <!-- Camera panel -->
+      <div id="cameraPanel" hidden>
+        <div class="camera-frame">
+          <video id="cameraVideo" autoplay playsinline muted></video>
+          <canvas id="cameraCanvas" hidden></canvas>
+        </div>
+        <div class="head-actions" style="margin-top:10px;">
+          <button type="button" class="btn btn-soft btn-sm" id="startCameraBtn">Start camera</button>
+          <button type="button" class="btn btn-primary btn-sm" id="captureBtn" disabled>&#128247; Capture page</button>
+        </div>
+        <p class="muted" id="cameraHint">Works on both mobile and desktop browsers with camera access.</p>
+
+        <div class="page-strip" id="pageStrip"></div>
+      </div>
+
+      <div class="grid-2" style="margin-top:14px;">
+        <div class="field">
+          <label for="agreementProperty">Property</label>
+          <select id="agreementProperty" class="select">
+            <option value="">— Not linked —</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="agreementTenant">Leaseholder</label>
+          <select id="agreementTenant" class="select">
+            <option value="">— Not linked —</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="agreementStart">Agreement start date</label>
+          <input type="date" id="agreementStart" />
+        </div>
+        <div class="field">
+          <label for="agreementEnd">Agreement end date</label>
+          <input type="date" id="agreementEnd" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="agreementNotes">Notes</label>
+        <textarea id="agreementNotes" rows="2" maxlength="1000" placeholder="Optional notes"></textarea>
+      </div>
+
+      <div class="field" id="agreementProgressField" hidden>
+        <label>Uploading…</label>
+        <div class="mini-bar"><i id="agreementProgressBar" style="width:0%"></i></div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+        <button type="submit" class="btn btn-primary" id="agreementSubmit">
+          <span class="btn-label">Save agreement</span>
+          <span class="spinner spinner-sm" hidden></span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Replace file -->
+<div class="modal" id="replaceModal" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card glass small" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h2>Replace document</h2>
+      <button class="icon-btn" data-close aria-label="Close">&times;</button>
+    </div>
+    <form id="replaceForm" class="modal-body">
+      <input type="hidden" id="replaceAgreementId" />
+      <div class="dropzone" id="replaceDropZone">
+        <div class="dropzone-icon">&#128196;</div>
+        <p><strong>Drag &amp; drop</strong> the new file here</p>
+        <p class="muted">or</p>
+        <button type="button" class="btn btn-soft btn-sm" id="replaceBrowseBtn">Choose file</button>
+        <input type="file" id="replaceFileInput" accept=".pdf,.jpg,.jpeg,.png" hidden />
+      </div>
+      <div class="file-chip" id="replaceFileChip" hidden>
+        <span class="file-chip-icon">&#128196;</span>
+        <div class="file-chip-info">
+          <strong id="replaceFileChipName"></strong>
+          <span id="replaceFileChipMeta" class="cell-sub"></span>
+        </div>
+        <button type="button" class="icon-btn" id="replaceFileChipRemove" aria-label="Remove file">&times;</button>
+      </div>
+      <div class="field" id="replaceProgressField" hidden>
+        <label>Uploading…</label>
+        <div class="mini-bar"><i id="replaceProgressBar" style="width:0%"></i></div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+        <button type="submit" class="btn btn-primary" id="replaceSubmit">
+          <span class="btn-label">Replace</span>
+          <span class="spinner spinner-sm" hidden></span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+  
+  <!-- AI assistant: floating button + chat panel, present on every authenticated page -->
+<button
+  type="button"
+  id="aiChatToggle"
+  class="ai-chat-fab"
+  aria-label="Open AI assistant"
+  aria-haspopup="dialog"
+  aria-expanded="false"
+  aria-controls="aiChatPanel"
+>
+  <span class="ai-chat-fab-icon" aria-hidden="true">&#10024;</span>
+</button>
+
+<section
+  id="aiChatPanel"
+  class="ai-chat-panel"
+  role="dialog"
+  aria-label="AI assistant"
+  aria-modal="false"
+  hidden
+>
+  <header class="ai-chat-header">
+    <div class="ai-chat-header-info">
+      <span class="ai-chat-avatar" aria-hidden="true">&#129302;</span>
+      <div>
+        <p class="ai-chat-title">RentFlow Assistant</p>
+        <p class="ai-chat-subtitle" id="aiChatStatus">Online</p>
+      </div>
+    </div>
+    <div class="ai-chat-header-actions">
+      <button type="button" class="icon-btn" id="aiChatThemeToggle" aria-label="Toggle theme" title="Toggle dark/light mode">&#9788;</button>
+      <button type="button" class="icon-btn" id="aiChatClose" aria-label="Close AI assistant">&times;</button>
+    </div>
+  </header>
+
+  <div class="ai-chat-messages" id="aiChatMessages" aria-live="polite"></div>
+
+  <div class="ai-chat-suggestions" id="aiChatSuggestions">
+    <button type="button" class="ai-chip">Pending rent</button>
+    <button type="button" class="ai-chip">Vacant properties</button>
+    <button type="button" class="ai-chip">This month's income</button>
+    <button type="button" class="ai-chip">Next renewal</button>
+  </div>
+
+  <form class="ai-chat-input-row" id="aiChatForm">
+    <label for="aiChatInput" class="sr-only">Ask the AI assistant</label>
+    <input
+      type="text"
+      id="aiChatInput"
+      autocomplete="off"
+      maxlength="500"
+      placeholder="Ask in English, Hindi or Hinglish…"
+    />
+    <button type="submit" class="ai-chat-send" id="aiChatSend" aria-label="Send message">&#10148;</button>
+  </form>
+</section>
+  
+
+  <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
+
+  <script src="/static/js/config.js"></script>
+  <script src="/static/js/ui.js"></script>
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/pwa.js"></script>
+  
+  <script src="/static/js/chatbot.js"></script>
+  <script src="/static/js/notifications.js"></script>
+  
+  
+<script src="/static/js/layout.js"></script>
+<script src="/static/js/scanner.js"></script>
+<script src="/static/js/agreements.js"></script>
+
+</body>
+</html>
