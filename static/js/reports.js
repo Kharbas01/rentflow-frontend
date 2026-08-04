@@ -160,7 +160,7 @@
     const url = "/api/reports/" + state.type + "/" + kind + "?" + query.toString();
 
     try {
-      const response = await fetch(API.url(url), { credentials: API.credentials });
+      const response = await fetch(API.url(url), { credentials: API.credentials, headers: API.authHeaders() });
       if (!response.ok) {
         const body = await response.json().catch(() => ({}));
         throw new Error(body.detail || "Could not generate the file.");

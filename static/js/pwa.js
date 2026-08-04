@@ -34,7 +34,7 @@
 
     window.addEventListener("load", async () => {
       try {
-        const registration = await navigator.serviceWorker.register("/static/service-worker.js", { scope: "/" });
+        const registration = await navigator.serviceWorker.register("/static/service-worker.js", { scope: "/static/" });
 
         registration.addEventListener("updatefound", () => {
           const installing = registration.installing;

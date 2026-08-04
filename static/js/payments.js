@@ -232,7 +232,7 @@
   /* ---------------- Workflow: receipt download ---------------- */
   async function downloadReceipt(id) {
     try {
-      const response = await fetch(API.url("/api/payments/" + id + "/receipt"), { credentials: API.credentials });
+      const response = await fetch(API.url("/api/payments/" + id + "/receipt"), { credentials: API.credentials, headers: API.authHeaders() });
       if (!response.ok) {
         const body = await response.json().catch(() => ({}));
         throw new Error(body.detail || "No receipt is available for this record yet.");
@@ -525,6 +525,7 @@
       const response = await fetch(API.url("/api/payments/report?range=" + encodeURIComponent(range)), {
         method: "GET",
         credentials: API.credentials,
+        headers: API.authHeaders(),
       });
 
       if (!response.ok) {

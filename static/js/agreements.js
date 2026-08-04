@@ -230,6 +230,7 @@
     try {
       const response = await fetch(API.url("/api/agreements/" + id + "/download"), {
         credentials: API.credentials,
+        headers: API.authHeaders(),
       });
       if (!response.ok) {
         const err = await response.json().catch(() => ({}));

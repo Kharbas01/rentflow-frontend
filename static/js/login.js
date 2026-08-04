@@ -22,10 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const button = document.getElementById("loginSubmit");
       UI.setButtonLoading(button, true);
       try {
-        await API.post("/api/auth/login", {
+        const result = await API.post("/api/auth/login", {
           email: document.getElementById("loginEmail").value.trim(),
           password: document.getElementById("loginPassword").value,
         });
+        if (result && result.access_token) API.setToken(result.access_token);
         UI.toast("Signed in. Loading your dashboard…", "success");
         setTimeout(() => { window.location.href = "/"; }, 400);
       } catch (error) {
